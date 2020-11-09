@@ -13,6 +13,7 @@ import AddProductToCart from "components/AddProductToCart/AddProductToCart";
 import axios from 'axios';
 import API_PATHS from "../../../../constants/apiPaths";
 import {Popover} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,8 +44,11 @@ export default function Products() {
     axios.get(`${API_PATHS.product}/products-list`)
       .then(res => {
         setProducts(res.data)
-      });
+      }).catch(err => {
+        console.error(err);
+    });
   }, [])
+
 
   const handlePopoverOpen = (productId: string) => {
     const product: Product | undefined = productsAdditionalData.get(productId);
@@ -57,10 +61,24 @@ export default function Products() {
         .then(res => {
           productsAdditionalData.set(res.data.id, res.data);
           setProductsAdditionalData(productsAdditionalData);
-          setProductAdditionalData(res.data);
+          setProductAdditionalData(res?.data[0]);
           setPopover(true);
-        });
+        }).catch(err => {
+        console.error(err);
+      });
     }
+  }
+
+  const createNewProduct = () => {
+    axios.post(`${API_PATHS.product}/products`, {
+      title: 'New Product',
+      description: 'Added new product',
+      price: '400',
+    }).then((res) => {
+      setProducts(res.data)
+    }).catch(err => {
+      console.error(err);
+    })
   }
 
   return (
@@ -106,6 +124,7 @@ export default function Products() {
           </Popover>
         </Grid>
       ))}
+      <Button onClick={createNewProduct}>Добавить новый продукт</Button>
     </Grid>
   );
 }
