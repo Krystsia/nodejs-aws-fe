@@ -59,7 +59,6 @@ export default function Products() {
     } else {
       axios.get(`${API_PATHS.product}/products/${productId}`)
         .then(res => {
-          console.log(res, 'asdfadsf')
           productsAdditionalData.set(res.data.id, res.data);
           setProductsAdditionalData(productsAdditionalData);
           setProductAdditionalData(res?.data[0]);
