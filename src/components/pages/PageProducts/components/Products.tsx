@@ -49,6 +49,7 @@ export default function Products() {
     });
   }, [])
 
+
   const handlePopoverOpen = (productId: string) => {
     const product: Product | undefined = productsAdditionalData.get(productId);
 
@@ -58,9 +59,10 @@ export default function Products() {
     } else {
       axios.get(`${API_PATHS.product}/products/${productId}`)
         .then(res => {
+          console.log(res, 'asdfadsf')
           productsAdditionalData.set(res.data.id, res.data);
           setProductsAdditionalData(productsAdditionalData);
-          setProductAdditionalData(res.data);
+          setProductAdditionalData(res?.data[0]);
           setPopover(true);
         }).catch(err => {
         console.error(err);
@@ -70,6 +72,9 @@ export default function Products() {
 
   const createNewProduct = () => {
     axios.post(`${API_PATHS.product}/products`, {
+      title: 'New Product',
+      description: 'Added new product',
+      price: '400',
     }).then((res) => {
       setProducts(res.data)
     }).catch(err => {
@@ -116,10 +121,11 @@ export default function Products() {
             <Typography>
               {productAdditionalData && formatAsPrice(productAdditionalData?.price)}
             </Typography>
+
           </Popover>
         </Grid>
       ))}
-      <Button onClick={createNewProduct}>Создать новый продукт</Button>
+      <Button onClick={createNewProduct}>Добавить новый продукт</Button>
     </Grid>
   );
 }
