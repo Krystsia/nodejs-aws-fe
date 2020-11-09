@@ -13,6 +13,7 @@ import AddProductToCart from "components/AddProductToCart/AddProductToCart";
 import axios from 'axios';
 import API_PATHS from "../../../../constants/apiPaths";
 import {Popover} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,7 +44,9 @@ export default function Products() {
     axios.get(`${API_PATHS.product}/products-list`)
       .then(res => {
         setProducts(res.data)
-      });
+      }).catch(err => {
+        console.error(err);
+    });
   }, [])
 
   const handlePopoverOpen = (productId: string) => {
@@ -59,8 +62,19 @@ export default function Products() {
           setProductsAdditionalData(productsAdditionalData);
           setProductAdditionalData(res.data);
           setPopover(true);
-        });
+        }).catch(err => {
+        console.error(err);
+      });
     }
+  }
+
+  const createNewProduct = () => {
+    axios.post(`${API_PATHS.product}/products`, {
+    }).then((res) => {
+      setProducts(res.data)
+    }).catch(err => {
+      console.error(err);
+    })
   }
 
   return (
@@ -102,10 +116,10 @@ export default function Products() {
             <Typography>
               {productAdditionalData && formatAsPrice(productAdditionalData?.price)}
             </Typography>
-
           </Popover>
         </Grid>
       ))}
+      <Button onClick={createNewProduct}>Создать новый продукт</Button>
     </Grid>
   );
 }
